@@ -7,58 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- <link rel="stylesheet" href="style/style.css"> -->
-    <style>
-        body { 
-        font-family: 'Inter', sans-serif; 
-        background-color: #121212; /* Change this to your preferred hex code */
-        color: #4A3428; /* Keeps your text readable */
-        }
-        .font-serif {   
-            font-family: 'Playfair Display', serif;
-        }
-        .glass-header {
-
-            border-radius: 20px;
-
-            /* Glass effect */
-            background: rgba(0, 0, 0, 0.212);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255, 255, 255, 0.432);
-
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px rgba(255, 255, 255, 0.3);      
-        }
-
-        .glass-grid {
-            background: rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(110px);
-            -webkit-backdrop-filter: blur(100px);
-            border: 1px solid rgb(255, 255, 255);
-        }
-
-        /* Custom Shadow - Makes text pop against backgrounds */
-        .text-shadow-glow {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Text Outline - Creates a stroke around the letters */
-        .text-outline {
-            -webkit-text-stroke: 1px rgba(172, 144, 80, 0.5); /* Color: #C9A961 at 50% opacity */
-        }
-
-        /* Deep iPhone-style contrast shadow */
-        .text-luxury-shadow {
-            text-shadow: 0px 0px 25px rgba(0, 0, 0);
-        }
-        
-
-
-
-    </style>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body class="min-h-screen text-[#4A3428] bg-gradient-to-r from-[#1A1A1A] to-[#2F4F4F] ">
@@ -90,7 +40,7 @@
 
     <section class="relative h-screen flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0">
-            <img src="https://images.unsplash.com/photo-1749766878223-6ceae855b28b?q=80&w=1080" 
+            <img src="images/Luxury_beauty_salon.jfif" 
                  alt="Luxury beauty salon" 
                  class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-r from-[#1A1A1A]/80 to-[#2F4F4F]/70"></div>
@@ -102,10 +52,10 @@
                 Experience luxury treatments in a serene environment designed to help you look and feel your absolute best.
             </p>
             <div class="flex gap-4 justify-center flex-wrap">
-                <button class="bg-[#C9A961] hover:bg-[#D4AF37] text-[#1A1A1A] px-8 py-4 text-lg rounded-md transition-all font-semibold">
+                <button class="glass-header border-[#C9A961] text-white hover:bg-[#C9A961] hover:text-[#1A1A1A] px-8 py-4 text-lg rounded-md transition-all font-semibold">
                     Book Appointment
                 </button>
-                <button class="border-2 border-[#C9A961] text-white hover:bg-[#C9A961] hover:text-[#1A1A1A] px-8 py-4 text-lg rounded-md transition-all font-semibold">
+                <button class="glass-header border-[#C9A961] text-white hover:bg-[#C9A961] hover:text-[#1A1A1A] px-8 py-4 text-lg rounded-md transition-all font-semibold">
                     View Services
                 </button>
             </div>
@@ -124,40 +74,40 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                 <div class="glass-grid rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-[#ffffff]/30 group">
                     <div class="relative h-64 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1710839465443-8671ced76e09?q=80&w=1080" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="images/FacialsNSkin_Care.jfif" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6">
                         <h3 class="text-2xl font-serif text-white mb-2">Facials & Skin Care</h3>
                         <p class="mb-4 text-gray-400">Rejuvenate your skin with our luxurious facial treatments tailored to your unique needs.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-[#C9A961] font-bold">From $85</span>
-                            <button class="border border-[#C9A961] text-[#C9A961] hover:bg-[#C9A961] hover:text-white px-4 py-2 rounded transition-colors">Learn More</button>
+                            <button class="glass-button border-[#C9A961] text-white hover:bg-[#C9A961] hover:text-[#1A1A1A] px-4 py-2 text-lg rounded-md transition-all">Learn More</button>
                         </div>
                     </div>
                 </div>
                 <div class="glass-grid rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-[#ffffff]/30 group">
                     <div class="relative h-64 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1587145717184-e7ee5311253d?q=80&w=1080" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="images/Massage_Therapy.jfif" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6">
                         <h3 class="text-2xl font-serif text-white mb-2">Massage Therapy</h3>
                         <p class="mb-4 text-gray-400">Relax and unwind with our therapeutic massage treatments designed to melt away stress.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-[#C9A961] font-bold">From $95</span>
-                            <button class="border border-[#C9A961] text-[#C9A961] hover:bg-[#C9A961] hover:text-white px-4 py-2 rounded transition-colors">Learn More</button>
+                            <button class="glass-button border-[#C9A961] text-white hover:bg-[#C9A961] hover:text-[#1A1A1A] px-4 py-2 text-lg rounded-md transition-all">Learn More</button>
                         </div>
                     </div>
                 </div>
                 <div class="glass-grid rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-[#ffffff]/30 group">
                     <div class="relative h-64 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1769687209448-025548dfca8b?q=80&w=1080" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="images/Nail_Care.jfif" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6">
                         <h3 class="text-2xl font-serif text-white mb-2">Nail Care</h3>
                         <p class="mb-4 text-gray-400">Pamper yourself with our premium manicure and pedicure services in a serene environment.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-[#C9A961] font-bold">From $55</span>
-                            <button class="border border-[#C9A961] text-[#C9A961] hover:bg-[#C9A961] hover:text-white px-4 py-2 rounded transition-colors">Learn More</button>
+                            <button class="glass-button border-[#C9A961] text-white hover:bg-[#C9A961] hover:text-[#1A1A1A] px-4 py-2 text-lg rounded-md transition-all">Learn More</button>
                         </div>
                     </div>
                 </div>
@@ -175,11 +125,11 @@
                         Our team of certified professionals is dedicated to providing personalized care that brings out your natural radiance.
                     </p>
                     <div class="grid grid-cols-2 gap-6 mt-8">
-                        <div class="text-center p-4 bg-[#2F4F4F]/10 rounded-lg border border-[#C9A961]/30">
+                        <div class="glass-button text-center p-4 bg-[#2F4F4F]/10 rounded-lg border border-[#C9A961]/30">
                             <div class="text-3xl text-[#C9A961] font-serif mb-2">10+</div>
                             <div class="text-[#B8933F] text-sm font-semibold uppercase tracking-wider">Years Experience</div>
                         </div>
-                        <div class="text-center p-4 bg-[#2F4F4F]/10 rounded-lg border border-[#C9A961]/30">
+                        <div class="glass-button text-center p-4 bg-[#2F4F4F]/10 rounded-lg border border-[#C9A961]/30">
                             <div class="text-3xl text-[#C9A961] font-serif mb-2">5000+</div>
                             <div class="text-[#B8933F] text-sm font-semibold uppercase tracking-wider">Happy Clients</div>
                         </div>
@@ -187,7 +137,7 @@
                 </div>
                 <div class="relative">
                     <div class="relative h-[500px] rounded-lg overflow-hidden shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1749766878223-6ceae855b28b?q=80&w=1080" alt="Interior" class="w-full h-full object-cover">
+                        <img src="images/Luxury_beauty_salon.jfif" alt="Interior" class="w-full h-full object-cover">
                     </div>
                 </div>
             </div>
@@ -196,26 +146,26 @@
 
     <section id="contact" class="py-20 text-white glass-header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl md:text-5xl font-serif mb-4">Ready to Glow?</h2>
+            <h2 class="text-[#C9A961] text-4xl md:text-5xl font-serif mb-4">Ready to Glow?</h2>
             <p class="text-xl text-gray-300 mb-12">Book your appointment today and experience the difference.</p>
             
             <div class="grid md:grid-cols-3 gap-8 mb-16">
                 <div>
-                    <div class="w-16 h-16 bg-[#C9A961]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="glass-button w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i data-lucide="phone" class="text-[#C9A961]"></i>
                     </div>
                     <h3 class="text-xl font-serif mb-2">Call Us</h3>
                     <p class="text-gray-400">(555) 123-4567</p>
                 </div>
                 <div>
-                    <div class="w-16 h-16 bg-[#C9A961]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="glass-button w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i data-lucide="mail" class="text-[#C9A961]"></i>
                     </div>
                     <h3 class="text-xl font-serif mb-2">Email Us</h3>
                     <p class="text-gray-400">hello@bodyglow.com</p>
                 </div>
                 <div>
-                    <div class="w-16 h-16 bg-[#C9A961]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="glass-button w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i data-lucide="map-pin" class="text-[#C9A961]"></i>
                     </div>
                     <h3 class="text-xl font-serif mb-2">Visit Us</h3>
@@ -223,7 +173,7 @@
                 </div>
             </div>
             
-            <button class="bg-[#C9A961] text-[#1A1A1A] hover:bg-[#D4AF37] px-10 py-5 text-xl font-bold rounded-md transition-all">
+            <button class="glass-button border-[#C9A961] text-[#C9A961] hover:bg-[#C9A961] hover:text-[#1A1A1A] px-10 py-5 text-xl font-bold rounded-md transition-all">
                 Schedule Your Visit
             </button>
         </div>
@@ -235,11 +185,11 @@
                 <i data-lucide="sparkles" class="w-6 h-6 text-[#C9A961]"></i>
                 <span class="text-2xl font-serif">Body Glow</span>
             </div>
-            <p class="text-gray-500 mb-8">&copy; 2026 Body Glow. All rights reserved. Designed with ❤️ for your beauty journey.</p>
+            <p class="text-gray-500 mb-8">&copy; 2026 Body Glow. All rights reserved. Designed by Project group 259.</p>
             <div class="flex justify-center gap-6">
-                <a href="https://facebook.com/" target="_blank" class="w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform">f</a>
-                <a href="https://instagram.com/" target="_blank" class="w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform">ig</a>
-                <a href="https://linkedin.com/" target="_blank" class="w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform">in</a>
+                <a href="https://facebook.com/" target="_blank" class="glass-button w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com/" target="_blank" class="glass-button w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://linkedin.com/" target="_blank" class="glass-button w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform"><i class="fa-brands fa-linkedin-in"></i></a>
             </div>
         </div>
     </footer>

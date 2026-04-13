@@ -23,6 +23,15 @@ color: #4A3428; /* Keeps your text readable */
         inset 0 1px rgba(255, 255, 255, 0.3);      
 }
 
+.glass-button {
+    background: rgba(0, 0, 0, 0.041);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: blur(110px);
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 2),
+        inset 0 1px rgba(255, 255, 255, 0.23); 
+}
+
 .glass-grid {
     background: rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(110px);
