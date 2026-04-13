@@ -1,0 +1,46 @@
+
+body { 
+font-family: 'Inter', sans-serif; 
+background-color: #121212; /* Change this to your preferred hex code */
+color: #4A3428; /* Keeps your text readable */
+}
+.font-serif {   
+    font-family: 'Playfair Display', serif;
+}
+.glass-header {
+
+    border-radius: 20px;
+
+    /* Glass effect */
+    background: rgba(0, 0, 0, 0.212);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.432);
+
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px rgba(255, 255, 255, 0.3);      
+}
+
+.glass-grid {
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(110px);
+    -webkit-backdrop-filter: blur(100px);
+    border: 1px solid rgb(255, 255, 255);
+}
+
+/* Custom Shadow - Makes text pop against backgrounds */
+.text-shadow-glow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Text Outline - Creates a stroke around the letters */
+.text-outline {
+    -webkit-text-stroke: 1px rgba(172, 144, 80, 0.5); /* Color: #C9A961 at 50% opacity */
+}
+
+/* Deep iPhone-style contrast shadow */
+.text-luxury-shadow {
+    text-shadow: 0px 0px 25px rgba(0, 0, 0);
+}
