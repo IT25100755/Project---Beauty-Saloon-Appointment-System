@@ -7,6 +7,7 @@ color: #4A3428; /* Keeps your text readable */
 .font-serif {   
     font-family: 'Playfair Display', serif;
 }
+
 .glass-header {
 
     border-radius: 20px;
@@ -53,3 +54,12 @@ color: #4A3428; /* Keeps your text readable */
 .text-luxury-shadow {
     text-shadow: 0px 0px 25px rgba(0, 0, 0);
 }
+
+.glass-effect{
+    background: linear-gradient(
+        to bottom, 
+        rgba(255, 255, 255, 0.253) 0%,
+        rgba(255, 255, 255, 0) 1.5%
+    );
+}
+
