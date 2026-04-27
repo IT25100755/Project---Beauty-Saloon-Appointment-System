@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Body Glow</title>
+    <meta name="description" content="Body Glow Admin Panel — manage users, staff, services, appointments and offers.">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+        .sidebar-link { @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:text-[#C9A961] hover:bg-[#C9A961]/08 transition-all duration-200 font-medium text-sm cursor-pointer; }
+        .sidebar-link.active { color: #C9A961; background: rgba(201,169,97,0.12); border-left: 3px solid #C9A961; }
+        .admin-table th { padding: 10px 16px; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(201,169,97,0.7); border-bottom: 1px solid rgba(255,255,255,0.08); font-weight: 600; }
+        .admin-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem; color: #d1d5db; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; transition: all 0.3s; }
+        .stat-card:hover { border-color: rgba(201,169,97,0.3); background: rgba(201,169,97,0.05); }
+        .form-row { display: grid; gap: 14px; }
+        .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+        @media(max-width:640px) { .form-row.cols-2 { grid-template-columns: 1fr; } }
+        #sidebar { transition: transform 0.3s ease; }
+        .section { display: none; }
+        .section.active { display: block; }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-[#111] via-[#1a1a1a] to-[#1e2a2a] text-white font-sans">
+
+<!-- ── Access Denied Gate (shown while checking, then hidden or shown) ── -->
+<div id="access-gate" class="fixed inset-0 z-[999] bg-[#111] flex items-center justify-center">
+    <div class="text-center px-6 animate-fadeInUp">
+        <div class="w-20 h-20 rounded-full bg-[#C9A961]/10 border-2 border-[#C9A961]/30 flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="shield" class="w-10 h-10 text-[#C9A961]"></i>
+        </div>
+        <p id="gate-msg" class="text-gray-400 text-sm">Verifying access…</p>
+        <div class="mt-4 w-8 h-8 border-2 border-[#C9A961] border-t-transparent rounded-full animate-spin mx-auto" id="gate-spinner"></div>
+        <div id="gate-denied" class="hidden mt-6 space-y-4">
+            <h2 class="text-2xl font-serif text-white">Access Denied</h2>
+            <p class="text-gray-500 text-sm max-w-xs mx-auto">You must be a registered admin to access this panel.</p>
+            <div class="flex gap-3 justify-center pt-2">
+                <a href="index.html" class="text-[#C9A961] hover:underline text-sm">← Back to Home</a>
+                <a href="signin.html" class="bg-[#C9A961] text-[#1A1A1A] font-bold px-5 py-2 rounded-lg text-sm hover:bg-[#B8933F] transition-all">Sign In</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Top Bar ───────────────────────────────────────────────── -->
+<div class="fixed top-0 left-0 right-0 z-50 h-14 glass-header border-b border-[#C9A961]/15 flex items-center justify-between px-4 sm:px-6">
+    <div class="flex items-center gap-3">
+        <!-- Mobile menu toggle -->
+        <button onclick="toggleSidebar()" class="lg:hidden text-gray-400 hover:text-[#C9A961] p-1">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <i data-lucide="sparkles" class="w-5 h-5 text-[#C9A961]"></i>
+        <span class="text-lg font-serif text-[#C9A961]">Body Glow</span>
+        <span class="hidden sm:inline text-gray-600 mx-1">|</span>
+        <span class="hidden sm:inline text-gray-400 text-sm font-medium">Admin Panel</span>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="text-[#C9A961] text-sm hidden sm:block" id="top-greeting"></span>
+        <a href="index.html" class="text-gray-500 hover:text-[#C9A961] text-xs transition-colors flex items-center gap-1">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> View Site
+        </a>
+    </div>
+</div>
+
+<!-- ── Layout ─────────────────────────────────────────────────── -->
+<div class="flex pt-14 min-h-screen">
+
+    <!-- ── Sidebar ──────────────────────────────────────────── -->
+    <aside id="sidebar" class="fixed lg:static top-14 left-0 bottom-0 w-60 bg-[#111]/95 border-r border-white/06 z-40 overflow-y-auto -translate-x-full lg:translate-x-0 flex flex-col">
+        <div class="p-4 flex-1">
+            <p class="text-[10px] text-gray-600 uppercase tracking-widest font-bold mb-3 px-1">Navigation</p>
+            <nav class="space-y-1">
+                <div class="sidebar-link active" onclick="showSection('overview')" id="nav-overview">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+                </div>
+                <div class="sidebar-link" onclick="showSection('admins')" id="nav-admins">
+                    <i data-lucide="shield" class="w-4 h-4"></i> Admins
+                </div>
+                <div class="sidebar-link" onclick="showSection('users')" id="nav-users">
+                    <i data-lucide="users" class="w-4 h-4"></i> Members
+                </div>
+                <div class="sidebar-link" onclick="showSection('staff')" id="nav-staff">
+                    <i data-lucide="user-check" class="w-4 h-4"></i> Staff
+                </div>
+                <div class="sidebar-link" onclick="showSection('appointments')" id="nav-appointments">
+                    <i data-lucide="calendar" class="w-4 h-4"></i> Appointments
+                </div>
+                <div class="sidebar-link" onclick="showSection('services')" id="nav-services">
+                    <i data-lucide="scissors" class="w-4 h-4"></i> Services
+                </div>
+                <div class="sidebar-link" onclick="showSection('offers')" id="nav-offers">
+                    <i data-lucide="tag" class="w-4 h-4"></i> Offers
+                </div>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-white/06">
+            <a href="index.html" class="sidebar-link text-xs">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Site
+            </a>
+        </div>
+    </aside>
+
+    <!-- Sidebar overlay for mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- ── Main Content ──────────────────────────────────────── -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden min-w-0">
+
+        <!-- ═══════════════ OVERVIEW ════════════════════════════ -->
+        <section id="section-overview" class="section active">
+            <div class="mb-6">
+                <h1 class="text-3xl font-serif text-white mb-1">Dashboard Overview</h1>
+                <p class="text-gray-500 text-sm">Salon management at a glance</p>
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="overview-stats">
+                <div class="stat-card text-center"><div class="skeleton h-8 w-16 mx-auto mb-2 rounded"></div><div class="skeleton h-3 w-20 mx-auto rounded"></div></div>
+                <div class="stat-card text-center"><div class="skeleton h-8 w-16 mx-auto mb-2 rounded"></div><div class="skeleton h-3 w-20 mx-auto rounded"></div></div>
+                <div class="stat-card text-center"><div class="skeleton h-8 w-16 mx-auto mb-2 rounded"></div><div class="skeleton h-3 w-20 mx-auto rounded"></div></div>
+                <div class="stat-card text-center"><div class="skeleton h-8 w-16 mx-auto mb-2 rounded"></div><div class="skeleton h-3 w-20 mx-auto rounded"></div></div>
+            </div>
+            <!-- Recent appointments -->
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="p-5 border-b border-white/06 flex items-center justify-between">
+                    <h2 class="font-semibold text-white">Recent Appointments</h2>
+                    <button onclick="showSection('appointments')" class="text-[#C9A961] text-xs hover:underline">View all →</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full" id="recent-appt-table">
+                        <thead><tr><th>Customer</th><th>Service</th><th>Staff</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody id="recent-appt-body">
+                            <tr><td colspan="5" class="text-center text-gray-600 py-8">Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ ADMINS ════════════════════════════ -->
+        <section id="section-admins" class="section">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-serif text-white mb-1">Admins</h1>
+                    <p class="text-gray-500 text-sm">Manage administrator accounts</p>
+                </div>
+                <button onclick="openModal('modal-add-admin')"
+                        class="flex items-center gap-2 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold px-5 py-2.5 rounded-lg transition-all hover:scale-105 text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Admin
+                </button>
+            </div>
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Admin Level</th><th>Actions</th></tr></thead>
+                        <tbody id="admins-body"><tr><td colspan="6" class="text-center text-gray-600 py-8">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ USERS / MEMBERS ═════════════════════ -->
+        <section id="section-users" class="section">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-serif text-white mb-1">Members</h1>
+                    <p class="text-gray-500 text-sm">Registered salon clients</p>
+                </div>
+                <button onclick="openModal('modal-add-user')"
+                        class="flex items-center gap-2 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold px-5 py-2.5 rounded-lg transition-all hover:scale-105 text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Member
+                </button>
+            </div>
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead>
+                        <tbody id="users-body"><tr><td colspan="5" class="text-center text-gray-600 py-8">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ STAFF ════════════════════════════════ -->
+        <section id="section-staff" class="section">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-serif text-white mb-1">Staff</h1>
+                    <p class="text-gray-500 text-sm">Manage salon staff members</p>
+                </div>
+                <button onclick="openModal('modal-add-staff')"
+                        class="flex items-center gap-2 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold px-5 py-2.5 rounded-lg transition-all hover:scale-105 text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Staff
+                </button>
+            </div>
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Phone</th><th>Actions</th></tr></thead>
+                        <tbody id="staff-body"><tr><td colspan="5" class="text-center text-gray-600 py-8">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ APPOINTMENTS ════════════════════════ -->
+        <section id="section-appointments" class="section">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-serif text-white mb-1">All Appointments</h1>
+                    <p class="text-gray-500 text-sm">View and manage every booking</p>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <select id="appt-filter" onchange="filterAppointments()" class="glass-input w-auto text-sm px-3 py-2">
+                        <option value="all">All Statuses</option>
+                        <option value="Booked">Booked</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead><tr><th>ID</th><th>Customer</th><th>Service</th><th>Staff</th><th>Date & Time</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="appointments-body"><tr><td colspan="7" class="text-center text-gray-600 py-8">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ SERVICES ═════════════════════════════ -->
+        <section id="section-services" class="section">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-serif text-white mb-1">Salon Services</h1>
+                    <p class="text-gray-500 text-sm">Manage available treatments and pricing</p>
+                </div>
+                <button onclick="openModal('modal-add-service')"
+                        class="flex items-center gap-2 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold px-5 py-2.5 rounded-lg transition-all hover:scale-105 text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Service
+                </button>
+            </div>
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead>
+                        <tbody id="services-body"><tr><td colspan="6" class="text-center text-gray-600 py-8">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ OFFERS ═══════════════════════════════ -->
+        <section id="section-offers" class="section">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <div>
+                    <h1 class="text-3xl font-serif text-white mb-1">Offers & Discounts</h1>
+                    <p class="text-gray-500 text-sm">Create and manage promotional offers</p>
+                </div>
+                <button onclick="openModal('modal-add-offer')"
+                        class="flex items-center gap-2 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold px-5 py-2.5 rounded-lg transition-all hover:scale-105 text-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Offer
+                </button>
+            </div>
+            <div class="glass-grid rounded-xl border border-white/08 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="admin-table w-full">
+                        <thead><tr><th>ID</th><th>Title</th><th>Service</th><th>Discount</th><th>Original Price</th><th>Discounted Price</th><th>Actions</th></tr></thead>
+                        <tbody id="offers-body"><tr><td colspan="7" class="text-center text-gray-600 py-8">Loading…</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ══════════════════ MODALS ════════════════════════════════════ -->
+
+<!-- ── Add Admin Modal ───────────────────────────────────────── -->
+<div id="modal-add-admin" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-add-admin')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-lg w-full mx-4 border border-white/10 shadow-2xl">
+        <h3 class="text-xl font-serif text-white mb-5 flex items-center gap-2">
+            <i data-lucide="shield" class="w-5 h-5 text-[#C9A961]"></i> Add Admin
+        </h3>
+        <form onsubmit="submitAdmin(event)" class="space-y-4">
+            <div class="form-row cols-2">
+                <div><label class="glass-label">Full Name *</label><input id="adm-name" class="glass-input" placeholder="John Smith" required></div>
+                <div><label class="glass-label">Email *</label><input id="adm-email" type="email" class="glass-input" placeholder="admin@bodyglow.lk" required></div>
+            </div>
+            <div class="form-row cols-2">
+                <div><label class="glass-label">Phone</label><input id="adm-phone" class="glass-input" placeholder="+94 71 234 5678"></div>
+                <div><label class="glass-label">Admin Level</label>
+                    <select id="adm-level" class="glass-input">
+                        <option value="Super Admin">Super Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Staff Admin">Staff Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-add-admin')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+                <button type="submit" id="btn-add-admin" class="flex-1 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all">Add Admin</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Add User/Member Modal ─────────────────────────────────── -->
+<div id="modal-add-user" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-add-user')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-lg w-full mx-4 border border-white/10 shadow-2xl">
+        <h3 class="text-xl font-serif text-white mb-5 flex items-center gap-2">
+            <i data-lucide="user-plus" class="w-5 h-5 text-[#C9A961]"></i> Add Member
+        </h3>
+        <form onsubmit="submitUser(event)" class="space-y-4">
+            <div><label class="glass-label">Full Name *</label><input id="usr-name" class="glass-input" placeholder="Alice Johnson" required></div>
+            <div class="form-row cols-2">
+                <div><label class="glass-label">Email *</label><input id="usr-email" type="email" class="glass-input" placeholder="alice@example.com" required></div>
+                <div><label class="glass-label">Phone</label><input id="usr-phone" class="glass-input" placeholder="+94 71 234 5678"></div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-add-user')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+                <button type="submit" id="btn-add-user" class="flex-1 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all">Add Member</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Add Staff Modal ───────────────────────────────────────── -->
+<div id="modal-add-staff" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-add-staff')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-lg w-full mx-4 border border-white/10 shadow-2xl">
+        <h3 class="text-xl font-serif text-white mb-5 flex items-center gap-2">
+            <i data-lucide="user-check" class="w-5 h-5 text-[#C9A961]"></i> Add Staff Member
+        </h3>
+        <form onsubmit="submitStaff(event)" class="space-y-4">
+            <div class="form-row cols-2">
+                <div><label class="glass-label">Full Name *</label><input id="stf-name" class="glass-input" placeholder="Sara Khan" required></div>
+                <div><label class="glass-label">Phone</label><input id="stf-phone" class="glass-input" placeholder="+94 71 234 5678"></div>
+            </div>
+            <div><label class="glass-label">Role / Specialty *</label>
+                <input id="stf-role" class="glass-input" list="role-suggestions" placeholder="e.g. Hair Stylist" required>
+                <datalist id="role-suggestions">
+                    <option value="Hair Stylist"><option value="Nail Technician">
+                    <option value="Massage Therapist"><option value="Makeup Artist">
+                    <option value="Skin Care Specialist"><option value="Receptionist">
+                </datalist>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-add-staff')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+                <button type="submit" id="btn-add-staff" class="flex-1 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all">Add Staff</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Add Service Modal ─────────────────────────────────────── -->
+<div id="modal-add-service" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-add-service')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-lg w-full mx-4 border border-white/10 shadow-2xl">
+        <h3 class="text-xl font-serif text-white mb-5 flex items-center gap-2">
+            <i data-lucide="scissors" class="w-5 h-5 text-[#C9A961]"></i> Add Service
+        </h3>
+        <form onsubmit="submitService(event)" class="space-y-4">
+            <div><label class="glass-label">Service Name *</label><input id="svc-name" class="glass-input" placeholder="e.g. Deep Tissue Massage" required></div>
+            <div><label class="glass-label">Description</label><textarea id="svc-desc" class="glass-input resize-none h-20" placeholder="Brief description of the service…"></textarea></div>
+            <div class="form-row cols-2">
+                <div><label class="glass-label">Price ($) *</label><input id="svc-price" type="number" min="0" step="0.01" class="glass-input" placeholder="85.00" required></div>
+                <div><label class="glass-label">Duration (minutes) *</label><input id="svc-duration" type="number" min="1" class="glass-input" placeholder="45" required></div>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-add-service')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+                <button type="submit" id="btn-add-service" class="flex-1 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all">Add Service</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Add Offer Modal ───────────────────────────────────────── -->
+<div id="modal-add-offer" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-add-offer')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-lg w-full mx-4 border border-white/10 shadow-2xl">
+        <h3 class="text-xl font-serif text-white mb-5 flex items-center gap-2">
+            <i data-lucide="tag" class="w-5 h-5 text-[#C9A961]"></i> Add Offer
+        </h3>
+        <form onsubmit="submitOffer(event)" class="space-y-4">
+            <div><label class="glass-label">Offer Title *</label><input id="off-title" class="glass-input" placeholder="e.g. Summer Special – 20% Off" required></div>
+            <div class="form-row cols-2">
+                <div><label class="glass-label">Service *</label>
+                    <select id="off-service" class="glass-input" required>
+                        <option value="">Select a service…</option>
+                    </select>
+                </div>
+                <div><label class="glass-label">Discount % *</label>
+                    <input id="off-discount" type="number" min="1" max="99" step="0.1" class="glass-input" placeholder="20" required>
+                </div>
+            </div>
+            <div id="off-preview" class="hidden p-3 rounded-lg bg-[#C9A961]/08 border border-[#C9A961]/25 text-sm">
+                <span class="text-gray-400">Discounted price: </span>
+                <span id="off-preview-price" class="text-[#C9A961] font-bold"></span>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-add-offer')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+                <button type="submit" id="btn-add-offer" class="flex-1 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all">Add Offer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Delete Confirm Modal ──────────────────────────────────── -->
+<div id="modal-delete" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-delete')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-sm w-full mx-4 border border-white/10 shadow-2xl text-center">
+        <div class="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="trash-2" class="w-7 h-7 text-red-400"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">Delete this record?</h3>
+        <p id="delete-msg" class="text-gray-400 text-sm mb-6">This action cannot be undone.</p>
+        <div class="flex gap-3">
+            <button onclick="closeModal('modal-delete')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+            <button onclick="confirmDelete()" id="btn-confirm-delete" class="flex-1 bg-red-500/80 hover:bg-red-500 text-white font-bold py-2.5 rounded-lg transition-all">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Appointment Action Modal ──────────────────────────────── -->
+<div id="modal-appt-action" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('modal-appt-action')"></div>
+    <div class="relative glass-grid rounded-2xl p-7 max-w-sm w-full mx-4 border border-white/10 shadow-2xl text-center">
+        <h3 class="text-lg font-semibold text-white mb-2" id="appt-action-title">Update Appointment</h3>
+        <p id="appt-action-msg" class="text-gray-400 text-sm mb-6"></p>
+        <div class="flex gap-3">
+            <button onclick="closeModal('modal-appt-action')" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+            <button onclick="confirmApptAction()" id="btn-appt-action" class="flex-1 font-bold py-2.5 rounded-lg transition-all">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script src="script/script.js"></script>
+<script>
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let allAppointments = [];
+let allServices     = [];
+let deleteTarget    = { endpoint: '', id: null, section: '', label: '' };
+let apptActionTarget = { id: null, action: '' };
+
+// ── Admin Auth Guard ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    checkAdminAccess();
+});
+
+async function checkAdminAccess() {
+    const gateMsg     = document.getElementById('gate-msg');
+    const gateSpinner = document.getElementById('gate-spinner');
+    const gateDenied  = document.getElementById('gate-denied');
+
+    // 1. Must be signed in
+    const user = getCurrentUser();
+    if (!user) {
+        sessionStorage.setItem('bodyglow_redirect', '/admin.html');
+        gateMsg.textContent = 'Please sign in first…';
+        gateSpinner.classList.add('hidden');
+        gateDenied.classList.remove('hidden');
+        lucide.createIcons();
+        return;
+    }
+
+    // 2. Check if their email is in the admins table
+    try {
+        const admins = await apiGet('/admins');
+        const isAdmin = admins.some(
+            a => a.email.toLowerCase() === user.email.toLowerCase()
+        );
+
+        if (!isAdmin) {
+            gateMsg.textContent = "Your account doesn't have admin privileges.";
+            gateSpinner.classList.add('hidden');
+            gateDenied.classList.remove('hidden');
+            lucide.createIcons();
+            return;
+        }
+
+        // 3. Access granted — hide gate and show panel
+        document.getElementById('access-gate').classList.add('hidden');
+        document.getElementById('top-greeting').textContent = user.name.split(' ')[0] + ' ✦';
+        loadSection('overview');
+
+    } catch {
+        // If server is down, fallback — still block access
+        gateMsg.textContent = 'Could not verify admin status. Is the server running?';
+        gateSpinner.classList.add('hidden');
+        lucide.createIcons();
+    }
+}
+
+// ── Sidebar toggle (mobile) ───────────────────────────────────────
+function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('sidebar-overlay');
+    const open = !sb.classList.contains('-translate-x-full');
+    sb.classList.toggle('-translate-x-full', open);
+    ov.classList.toggle('hidden', open);
+}
+
+// ── Section navigation ────────────────────────────────────────────
+let currentSection = 'overview';
+function showSection(name) {
+    document.getElementById(`section-${currentSection}`).classList.remove('active');
+    document.getElementById(`nav-${currentSection}`).classList.remove('active');
+    currentSection = name;
+    document.getElementById(`section-${name}`).classList.add('active');
+    document.getElementById(`nav-${name}`).classList.add('active');
+    // Close sidebar on mobile
+    document.getElementById('sidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebar-overlay').classList.add('hidden');
+    loadSection(name);
+}
+
+function loadSection(name) {
+    const loaders = { overview: loadOverview, admins: loadAdmins, users: loadUsers,
+                      staff: loadStaff, appointments: loadAppointments,
+                      services: loadServices, offers: loadOffers };
+    if (loaders[name]) loaders[name]();
+}
+
+// ── Modals ────────────────────────────────────────────────────────
+function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+    if (id === 'modal-add-offer') populateOfferServiceDropdown();
+    lucide.createIcons();
+}
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+// ════════════════════════════════════════════════════════════════
+// OVERVIEW
+// ════════════════════════════════════════════════════════════════
+async function loadOverview() {
+    try {
+        const [users, admins, staff, appts, svcs, offers] = await Promise.all([
+            apiGet('/users'), apiGet('/admins'), apiGet('/staff'),
+            apiGet('/appointments'), apiGet('/services'), apiGet('/offers')
+        ]);
+        allAppointments = appts;
+
+        document.getElementById('overview-stats').innerHTML = `
+            <div class="stat-card text-center">
+                <div class="text-3xl font-serif text-[#C9A961] mb-1">${users.length}</div>
+                <div class="text-gray-500 text-xs uppercase tracking-wider">Members</div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-serif text-[#C9A961] mb-1">${staff.length}</div>
+                <div class="text-gray-500 text-xs uppercase tracking-wider">Staff</div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-serif text-[#C9A961] mb-1">${appts.filter(a=>a.status==='Booked').length}</div>
+                <div class="text-gray-500 text-xs uppercase tracking-wider">Active Bookings</div>
+            </div>
+            <div class="stat-card text-center">
+                <div class="text-3xl font-serif text-[#81C784] mb-1">${svcs.length}</div>
+                <div class="text-gray-500 text-xs uppercase tracking-wider">Services</div>
+            </div>`;
+
+        const recent = [...appts].sort((a,b) => new Date(b.appointmentTime)-new Date(a.appointmentTime)).slice(0, 8);
+        document.getElementById('recent-appt-body').innerHTML = recent.length
+            ? recent.map(a => `<tr>
+                <td class="text-white">${esc(a.user?.name||'—')}</td>
+                <td>${esc(a.salonService?.name||'—')}</td>
+                <td>${esc(a.staff?.name||'—')}</td>
+                <td>${fmtDt(a.appointmentTime)}</td>
+                <td>${badge(a.status)}</td></tr>`).join('')
+            : `<tr><td colspan="5" class="text-center text-gray-600 py-8">No appointments yet</td></tr>`;
+        lucide.createIcons();
+    } catch(e) { console.error(e); }
+}
+
+// ════════════════════════════════════════════════════════════════
+// ADMINS
+// ════════════════════════════════════════════════════════════════
+async function loadAdmins() {
+    try {
+        const data = await apiGet('/admins');
+        document.getElementById('admins-body').innerHTML = data.length
+            ? data.map(a => `<tr>
+                <td class="text-gray-500 font-mono text-xs">#${a.id}</td>
+                <td class="text-white font-medium">${esc(a.name)}</td>
+                <td>${esc(a.email)}</td>
+                <td>${esc(a.phone||'—')}</td>
+                <td><span class="badge badge-booked">${esc(a.adminLevel||'Admin')}</span></td>
+                <td><button onclick="deleteRecord('/admins/${a.id}',${a.id},'admins','admin ${esc(a.name)}')"
+                       class="text-red-400 hover:text-red-300 text-xs border border-red-400/30 hover:border-red-400/60 px-3 py-1.5 rounded-lg transition-all">
+                   Delete</button></td></tr>`).join('')
+            : `<tr><td colspan="6" class="text-center text-gray-600 py-8">No admins found. Add one above.</td></tr>`;
+    } catch(e) { document.getElementById('admins-body').innerHTML = errRow(6); }
+}
+
+async function submitAdmin(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-add-admin');
+    btn.textContent = 'Adding…'; btn.disabled = true;
+    try {
+        const r = await apiPost('/admins', {
+            name: document.getElementById('adm-name').value.trim(),
+            email: document.getElementById('adm-email').value.trim(),
+            phone: document.getElementById('adm-phone').value.trim(),
+            adminLevel: document.getElementById('adm-level').value
+        });
+        if (!r.ok) throw new Error('Failed to add admin');
+        closeModal('modal-add-admin');
+        e.target.reset();
+        showToast('Admin added successfully! ✦', 'success');
+        loadAdmins();
+    } catch(err) { showToast(err.message||'Error adding admin', 'error'); }
+    finally { btn.textContent = 'Add Admin'; btn.disabled = false; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// USERS / MEMBERS
+// ════════════════════════════════════════════════════════════════
+async function loadUsers() {
+    try {
+        const data = await apiGet('/users');
+        document.getElementById('users-body').innerHTML = data.length
+            ? data.map(u => `<tr>
+                <td class="text-gray-500 font-mono text-xs">#${u.id}</td>
+                <td class="text-white font-medium">${esc(u.name)}</td>
+                <td>${esc(u.email)}</td>
+                <td>${esc(u.phone||'—')}</td>
+                <td><button onclick="deleteRecord('/users/${u.id}',${u.id},'users','member ${esc(u.name)}')"
+                       class="text-red-400 hover:text-red-300 text-xs border border-red-400/30 hover:border-red-400/60 px-3 py-1.5 rounded-lg transition-all">
+                   Delete</button></td></tr>`).join('')
+            : `<tr><td colspan="5" class="text-center text-gray-600 py-8">No members found.</td></tr>`;
+    } catch(e) { document.getElementById('users-body').innerHTML = errRow(5); }
+}
+
+async function submitUser(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-add-user');
+    btn.textContent = 'Adding…'; btn.disabled = true;
+    try {
+        const r = await apiPost('/users', {
+            name: document.getElementById('usr-name').value.trim(),
+            email: document.getElementById('usr-email').value.trim(),
+            phone: document.getElementById('usr-phone').value.trim()
+        });
+        if (!r.ok) throw new Error(typeof r.data==='string' ? r.data : 'Failed — email may already exist');
+        closeModal('modal-add-user');
+        e.target.reset();
+        showToast('Member added successfully!', 'success');
+        loadUsers();
+    } catch(err) { showToast(err.message||'Error adding member', 'error'); }
+    finally { btn.textContent = 'Add Member'; btn.disabled = false; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// STAFF
+// ════════════════════════════════════════════════════════════════
+async function loadStaff() {
+    try {
+        const data = await apiGet('/staff');
+        document.getElementById('staff-body').innerHTML = data.length
+            ? data.map(s => `<tr>
+                <td class="text-gray-500 font-mono text-xs">#${s.id}</td>
+                <td class="text-white font-medium">${esc(s.name)}</td>
+                <td><span class="text-[#C9A961] text-xs font-semibold">${esc(s.role)}</span></td>
+                <td>${esc(s.phone||'—')}</td>
+                <td><button onclick="deleteRecord('/staff/${s.id}',${s.id},'staff','staff member ${esc(s.name)}')"
+                       class="text-red-400 hover:text-red-300 text-xs border border-red-400/30 hover:border-red-400/60 px-3 py-1.5 rounded-lg transition-all">
+                   Delete</button></td></tr>`).join('')
+            : `<tr><td colspan="5" class="text-center text-gray-600 py-8">No staff found.</td></tr>`;
+    } catch(e) { document.getElementById('staff-body').innerHTML = errRow(5); }
+}
+
+async function submitStaff(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-add-staff');
+    btn.textContent = 'Adding…'; btn.disabled = true;
+    try {
+        const r = await apiPost('/staff', {
+            name: document.getElementById('stf-name').value.trim(),
+            role: document.getElementById('stf-role').value.trim(),
+            phone: document.getElementById('stf-phone').value.trim()
+        });
+        if (!r.ok) throw new Error('Failed to add staff member');
+        closeModal('modal-add-staff');
+        e.target.reset();
+        showToast('Staff member added!', 'success');
+        loadStaff();
+    } catch(err) { showToast(err.message||'Error adding staff', 'error'); }
+    finally { btn.textContent = 'Add Staff'; btn.disabled = false; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// APPOINTMENTS
+// ════════════════════════════════════════════════════════════════
+async function loadAppointments() {
+    try {
+        allAppointments = await apiGet('/appointments');
+        renderAppointmentsTable(allAppointments);
+    } catch(e) { document.getElementById('appointments-body').innerHTML = errRow(7); }
+}
+
+function filterAppointments() {
+    const f = document.getElementById('appt-filter').value;
+    const list = f === 'all' ? allAppointments : allAppointments.filter(a => a.status === f);
+    renderAppointmentsTable(list);
+}
+
+function renderAppointmentsTable(list) {
+    document.getElementById('appointments-body').innerHTML = list.length
+        ? list.map(a => `<tr>
+            <td class="text-gray-500 font-mono text-xs">#${a.id}</td>
+            <td class="text-white">${esc(a.user?.name||'—')}</td>
+            <td>${esc(a.salonService?.name||'—')}</td>
+            <td>${esc(a.staff?.name||'—')}</td>
+            <td class="whitespace-nowrap text-xs">${fmtDt(a.appointmentTime)}</td>
+            <td>${badge(a.status)}</td>
+            <td>
+                <div class="flex gap-1.5 flex-wrap">
+                ${a.status==='Booked' ? `
+                    <button onclick="apptAction(${a.id},'complete')"
+                       class="text-green-400 hover:text-green-300 text-xs border border-green-400/30 px-2 py-1 rounded transition-all">Complete</button>
+                    <button onclick="apptAction(${a.id},'cancel')"
+                       class="text-yellow-400 hover:text-yellow-300 text-xs border border-yellow-400/30 px-2 py-1 rounded transition-all">Cancel</button>
+                ` : ''}
+                    <button onclick="deleteRecord('/appointments/${a.id}',${a.id},'appointments','appointment #${a.id}')"
+                       class="text-red-400 hover:text-red-300 text-xs border border-red-400/30 px-2 py-1 rounded transition-all">Delete</button>
+                </div>
+            </td></tr>`).join('')
+        : `<tr><td colspan="7" class="text-center text-gray-600 py-8">No appointments found.</td></tr>`;
+    lucide.createIcons();
+}
+
+function apptAction(id, action) {
+    apptActionTarget = { id, action };
+    const isComplete = action === 'complete';
+    document.getElementById('appt-action-title').textContent = isComplete ? 'Mark as Completed?' : 'Cancel Appointment?';
+    document.getElementById('appt-action-msg').textContent   = isComplete
+        ? 'This will mark appointment #' + id + ' as completed.'
+        : 'This will cancel appointment #' + id + '. The client will not be notified.';
+    const btn = document.getElementById('btn-appt-action');
+    btn.textContent  = isComplete ? 'Mark Complete' : 'Cancel Booking';
+    btn.className    = isComplete
+        ? 'flex-1 bg-green-500/80 hover:bg-green-500 text-white font-bold py-2.5 rounded-lg transition-all'
+        : 'flex-1 bg-yellow-500/80 hover:bg-yellow-500 text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all';
+    openModal('modal-appt-action');
+}
+
+async function confirmApptAction() {
+    const { id, action } = apptActionTarget;
+    document.getElementById('btn-appt-action').textContent = 'Processing…';
+    document.getElementById('btn-appt-action').disabled    = true;
+    try {
+        const r = await apiPut(`/appointments/${id}/${action}`);
+        if (r.ok) {
+            closeModal('modal-appt-action');
+            showToast(action === 'complete' ? 'Appointment completed!' : 'Appointment cancelled.', 'success');
+            loadAppointments();
+        } else { showToast('Action failed. Please try again.', 'error'); }
+    } catch { showToast('Network error.', 'error'); }
+    finally {
+        document.getElementById('btn-appt-action').textContent = 'Confirm';
+        document.getElementById('btn-appt-action').disabled    = false;
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+// SERVICES
+// ════════════════════════════════════════════════════════════════
+async function loadServices() {
+    try {
+        allServices = await apiGet('/services');
+        document.getElementById('services-body').innerHTML = allServices.length
+            ? allServices.map(s => `<tr>
+                <td class="text-gray-500 font-mono text-xs">#${s.id}</td>
+                <td class="text-white font-medium">${esc(s.name)}</td>
+                <td class="max-w-xs truncate text-gray-400 text-xs">${esc(s.description||'—')}</td>
+                <td class="text-[#C9A961] font-bold">$${s.price.toFixed(2)}</td>
+                <td>${s.durationMinutes} min</td>
+                <td><button onclick="deleteRecord('/services/${s.id}',${s.id},'services','service ${esc(s.name)}')"
+                       class="text-red-400 hover:text-red-300 text-xs border border-red-400/30 hover:border-red-400/60 px-3 py-1.5 rounded-lg transition-all">
+                   Delete</button></td></tr>`).join('')
+            : `<tr><td colspan="6" class="text-center text-gray-600 py-8">No services found.</td></tr>`;
+    } catch(e) { document.getElementById('services-body').innerHTML = errRow(6); }
+}
+
+async function submitService(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-add-service');
+    btn.textContent = 'Adding…'; btn.disabled = true;
+    try {
+        const r = await apiPost('/services', {
+            name: document.getElementById('svc-name').value.trim(),
+            description: document.getElementById('svc-desc').value.trim(),
+            price: parseFloat(document.getElementById('svc-price').value),
+            durationMinutes: parseInt(document.getElementById('svc-duration').value)
+        });
+        if (!r.ok) throw new Error('Failed to add service');
+        closeModal('modal-add-service');
+        e.target.reset();
+        showToast('Service added!', 'success');
+        loadServices();
+    } catch(err) { showToast(err.message||'Error adding service', 'error'); }
+    finally { btn.textContent = 'Add Service'; btn.disabled = false; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// OFFERS
+// ════════════════════════════════════════════════════════════════
+async function loadOffers() {
+    try {
+        const data = await apiGet('/offers');
+        document.getElementById('offers-body').innerHTML = data.length
+            ? data.map(o => `<tr>
+                <td class="text-gray-500 font-mono text-xs">#${o.id}</td>
+                <td class="text-white font-medium">${esc(o.title||'—')}</td>
+                <td>${esc(o.salonService?.name||'—')}</td>
+                <td><span class="text-[#C9A961] font-bold">${o.discountPercentage}%</span></td>
+                <td class="text-gray-400 line-through">$${(o.salonService?.price||0).toFixed(2)}</td>
+                <td class="text-[#C9A961] font-bold">$${(o.discountedPrice||0).toFixed(2)}</td>
+                <td><button onclick="deleteRecord('/offers/${o.id}',${o.id},'offers','offer ${esc(o.title)}')"
+                       class="text-red-400 hover:text-red-300 text-xs border border-red-400/30 hover:border-red-400/60 px-3 py-1.5 rounded-lg transition-all">
+                   Delete</button></td></tr>`).join('')
+            : `<tr><td colspan="7" class="text-center text-gray-600 py-8">No offers found.</td></tr>`;
+    } catch(e) { document.getElementById('offers-body').innerHTML = errRow(7); }
+}
+
+async function populateOfferServiceDropdown() {
+    if (!allServices.length) allServices = await apiGet('/services').catch(()=>[]);
+    const sel = document.getElementById('off-service');
+    sel.innerHTML = '<option value="">Select a service…</option>'
+        + allServices.map(s => `<option value="${s.id}" data-price="${s.price}">${esc(s.name)} — $${s.price.toFixed(2)}</option>`).join('');
+    sel.addEventListener('change', updateOfferPreview);
+    document.getElementById('off-discount').addEventListener('input', updateOfferPreview);
+}
+
+function updateOfferPreview() {
+    const sel      = document.getElementById('off-service');
+    const discount = parseFloat(document.getElementById('off-discount').value)||0;
+    const opt      = sel.options[sel.selectedIndex];
+    const price    = parseFloat(opt?.dataset?.price||0);
+    const preview  = document.getElementById('off-preview');
+    if (price && discount) {
+        document.getElementById('off-preview-price').textContent = `$${(price*(1-discount/100)).toFixed(2)}`;
+        preview.classList.remove('hidden');
+    } else { preview.classList.add('hidden'); }
+}
+
+async function submitOffer(e) {
+    e.preventDefault();
+    const btn       = document.getElementById('btn-add-offer');
+    const serviceId = document.getElementById('off-service').value;
+    btn.textContent = 'Adding…'; btn.disabled = true;
+    try {
+        const r = await apiPost(`/offers/service/${serviceId}`, {
+            title: document.getElementById('off-title').value.trim(),
+            discountPercentage: parseFloat(document.getElementById('off-discount').value)
+        });
+        if (!r.ok) throw new Error('Failed to add offer');
+        closeModal('modal-add-offer');
+        e.target.reset();
+        document.getElementById('off-preview').classList.add('hidden');
+        showToast('Offer created!', 'success');
+        loadOffers();
+    } catch(err) { showToast(err.message||'Error creating offer', 'error'); }
+    finally { btn.textContent = 'Add Offer'; btn.disabled = false; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// DELETE (generic)
+// ════════════════════════════════════════════════════════════════
+function deleteRecord(endpoint, id, section, label) {
+    deleteTarget = { endpoint, id, section, label };
+    document.getElementById('delete-msg').textContent = `Delete ${label}? This cannot be undone.`;
+    openModal('modal-delete');
+}
+
+async function confirmDelete() {
+    const btn = document.getElementById('btn-confirm-delete');
+    btn.textContent = 'Deleting…'; btn.disabled = true;
+    try {
+        const res = await fetch(`/api${deleteTarget.endpoint}`, { method: 'DELETE' });
+        if (res.ok || res.status === 204) {
+            closeModal('modal-delete');
+            showToast(`Deleted successfully.`, 'success');
+            loadSection(deleteTarget.section);
+        } else { showToast('Delete failed. It may have linked records.', 'error'); }
+    } catch { showToast('Network error.', 'error'); }
+    finally { btn.textContent = 'Delete'; btn.disabled = false; }
+}
+
+// ════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════
+function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDt(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+        +' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+}
+function badge(status) {
+    const s = (status||'').toLowerCase();
+    const cls = s==='booked' ? 'badge-booked' : s==='completed' ? 'badge-completed' : 'badge-cancelled';
+    return `<span class="badge ${cls}">${status}</span>`;
+}
+function errRow(cols) {
+    return `<tr><td colspan="${cols}" class="text-center text-red-400 text-sm py-8">
+        <i data-lucide="wifi-off" class="w-4 h-4 inline mr-1"></i>Failed to load. Is the server running?
+    </td></tr>`;
+}
+</script>
+</body>
+</html>
