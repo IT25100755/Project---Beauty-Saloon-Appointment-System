@@ -22,3 +22,22 @@ Key objectives:
 - Centralize all salon operations in one platform
 
 ---
+
+## Features
+
+### Customer Features
+- User registration and login
+- Browse available services
+- Book appointments
+- View appointment history
+
+### Admin and Staff Features
+- Manage services (Create, Read, Update, Delete)
+- Manage staff and beauticians
+- View and control appointments
+- Dashboard for system overview
+
+### Appointment System
+- Real-time booking
+- Appointment status tracking
+- Conflict handling for time slots
