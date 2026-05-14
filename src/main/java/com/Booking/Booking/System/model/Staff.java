@@ -2,10 +2,6 @@ package com.Booking.Booking.System.model;
 
 import jakarta.persistence.*;
 
-/**
- * Staff class representing salon employees (stylists, therapists, etc.).
- * OOP Concept: Encapsulation (private fields with public getters/setters).
- */
 @Entity
 @Table(name = "staff")
 public class Staff {
@@ -18,11 +14,10 @@ public class Staff {
     private String name;
 
     @Column(nullable = false)
-    private String role; // e.g., "Hair Stylist", "Massage Therapist"
+    private String role; 
 
     private String phone;
 
-    // ─── Constructors ────────────────────────────────────────────────────────────
     public Staff() {}
 
     public Staff(String name, String role, String phone) {
@@ -31,16 +26,23 @@ public class Staff {
         this.phone = phone;
     }
 
-    // ─── Getters & Setters ───────────────────────────────────────────────────────
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() { 
+        return id; }
+    public void setId(Long id) { 
+        this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() { 
+        return name; }
+    public void setName(String name) { 
+        this.name = name; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getRole() { 
+        return role; }
+    public void setRole(String role) { 
+        this.role = role; }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public String getPhone() { 
+        return phone; }
+    public void setPhone(String phone) { 
+        this.phone = phone; }
 }
