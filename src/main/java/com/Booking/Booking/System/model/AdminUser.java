@@ -3,26 +3,22 @@ package com.Booking.Booking.System.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
-/**
- * AdminUser class representing system administrators.
- * OOP Concept: Inheritance — inherits id, name, email, phone from User.
- * OOP Concept: Polymorphism — AdminUser IS-A User.
- */
 @Entity
-@Table(name = "admins") // Stores admin-specific data (adminLevel) in a separate table
+@Table(name = "admins") 
 public class AdminUser extends User {
 
-    private String adminLevel; // e.g., "SuperAdmin", "Manager"
+    private String adminLevel; 
 
-    // ─── Constructors ────────────────────────────────────────────────────────────
+    
     public AdminUser() {}
 
     public AdminUser(String name, String email, String phone, String adminLevel) {
-        super(name, email, phone); // Calls parent constructor (Inheritance)
+        super(name, email, phone); 
         this.adminLevel = adminLevel;
     }
 
-    // ─── Getters & Setters ───────────────────────────────────────────────────────
-    public String getAdminLevel() { return adminLevel; }
-    public void setAdminLevel(String adminLevel) { this.adminLevel = adminLevel; }
+    public String getAdminLevel() {
+        return adminLevel; }
+    public void setAdminLevel(String adminLevel) { 
+        this.adminLevel = adminLevel; }
 }
