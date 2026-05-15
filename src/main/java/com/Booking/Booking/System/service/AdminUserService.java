@@ -8,10 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Service class for AdminUser.
- * OOP Concept: Encapsulation — business logic isolated from controllers.
- */
 @Service
 public class AdminUserService {
 
