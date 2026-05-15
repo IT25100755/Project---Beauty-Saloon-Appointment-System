@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 // REST Controller for User API.
- 
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -19,7 +19,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // CREATE User POST /api/users
+    //  CREATE User POST /api/users
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
@@ -30,7 +30,7 @@ public class UserController {
         }
     }
 
-    //READ All Users GET /api/users
+    //  READ All Users GET /api/users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers()); // 200 OK
@@ -44,7 +44,7 @@ public class UserController {
                    .orElse(ResponseEntity.notFound().build()); // 404 Not Found
     }
 
-    // READ User by Email GET /api/users/email/{email}
+    //  READ User by Email GET /api/users/email/{email}
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
