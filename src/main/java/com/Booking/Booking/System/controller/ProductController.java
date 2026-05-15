@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * REST Controller for Product API.
- * Exposes CRUD endpoints at /api/products
- */
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
