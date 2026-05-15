@@ -11,10 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * REST Controller for Appointment API.
- * Exposes booking, rescheduling, and cancellation endpoints at /api/appointments
- */
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
@@ -22,8 +18,7 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
 
-    // ─── BOOK Appointment ────────────────────────────────────────────────────────
-    // POST /api/appointments/book
+    //  BOOK Appointment POST /api/appointments/book
     @PostMapping("/book")
     public ResponseEntity<?> bookAppointment(@RequestBody Appointment appointment) {
         try {
@@ -35,15 +30,13 @@ public class AppointmentController {
         }
     }
 
-    // ─── READ All Appointments ───────────────────────────────────────────────────
-    // GET /api/appointments
+    //  READ All Appointment GET /api/appointments
     @GetMapping
     public ResponseEntity<List<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());
     }
 
-    // ─── READ Appointment by ID ──────────────────────────────────────────────────
-    // GET /api/appointments/{id}
+    //  READ Appointment by ID GET /api/appointments/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Appointment> getAppointmentById(@PathVariable Long id) {
         Optional<Appointment> appointment = appointmentService.getAppointmentById(id);
@@ -51,22 +44,19 @@ public class AppointmentController {
                           .orElse(ResponseEntity.notFound().build());
     }
 
-    // ─── READ Appointments by User ID ───────────────────────────────────────────
-    // GET /api/appointments/user/{userId}
+    //  READ Appointments by User ID GET /api/appointments/user/{userId}
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Appointment>> getAppointmentsByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(appointmentService.getAppointmentsByUserId(userId));
     }
 
-    // ─── READ Appointments by Status ────────────────────────────────────────────
-    // GET /api/appointments/status/{status}   e.g., status=Booked, Cancelled, Completed
+    //  READ Appointments by Status GET /api/appointments/status/{status}
     @GetMapping("/status/{status}")
     public ResponseEntity<List<Appointment>> getAppointmentsByStatus(@PathVariable String status) {
         return ResponseEntity.ok(appointmentService.getAppointmentsByStatus(status));
     }
 
-    // ─── RESCHEDULE Appointment ──────────────────────────────────────────────────
-    // PUT /api/appointments/{id}/reschedule?newTime=2025-06-20T10:00:00
+    //  RESCHEDULE Appointment PUT /api/appointments/{id}/reschedule?newTime=2025-06-20T10:00:00
     @PutMapping("/{id}/reschedule")
     public ResponseEntity<?> rescheduleAppointment(@PathVariable Long id,
                                                       @RequestParam String newTime) {
@@ -80,8 +70,7 @@ public class AppointmentController {
         }
     }
 
-    // ─── CANCEL Appointment ──────────────────────────────────────────────────────
-    // PUT /api/appointments/{id}/cancel
+    //  CANCEL Appointment PUT /api/appointments/{id}/cancel
     @PutMapping("/{id}/cancel")
     public ResponseEntity<?> cancelAppointment(@PathVariable Long id) {
         Appointment cancelled = appointmentService.cancelAppointment(id);
@@ -89,8 +78,7 @@ public class AppointmentController {
         return ResponseEntity.ok(cancelled);
     }
 
-    // ─── COMPLETE Appointment ────────────────────────────────────────────────────
-    // PUT /api/appointments/{id}/complete
+    //  COMPLETE Appointment PUT /api/appointments/{id}/complete
     @PutMapping("/{id}/complete")
     public ResponseEntity<?> completeAppointment(@PathVariable Long id) {
         Appointment completed = appointmentService.completeAppointment(id);
@@ -98,8 +86,7 @@ public class AppointmentController {
         return ResponseEntity.ok(completed);
     }
 
-    // ─── DELETE Appointment ──────────────────────────────────────────────────────
-    // DELETE /api/appointments/{id}
+    //  DELETE Appointment DELETE /api/appointments/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
