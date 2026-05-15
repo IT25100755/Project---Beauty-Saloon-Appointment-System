@@ -3,10 +3,6 @@ package com.Booking.Booking.System.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * Appointment class — maps Users, SalonServices, and Staff together.
- * OOP Concepts: Association (has-a relationships via @ManyToOne).
- */
 @Entity
 @Table(name = "appointments")
 public class Appointment {
@@ -36,7 +32,7 @@ public class Appointment {
     @Column(nullable = false)
     private String status; // "Booked", "Completed", "Cancelled"
 
-    // ─── Constructors ────────────────────────────────────────────────────────────
+    //  Constructors 
     public Appointment() {}
 
     public Appointment(User user, SalonService salonService, Staff staff,
@@ -48,7 +44,7 @@ public class Appointment {
         this.status = status;
     }
 
-    // ─── Getters & Setters ───────────────────────────────────────────────────────
+    //  Getters & Setters 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
