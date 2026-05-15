@@ -2,10 +2,6 @@ package com.Booking.Booking.System.model;
 
 import jakarta.persistence.*;
 
-/**
- * Product class representing a physical item sold by the salon (e.g., Shampoo, Conditioner).
- * OOP Concept: Encapsulation.
- */
 @Entity
 @Table(name = "products")
 public class Product {
@@ -25,7 +21,7 @@ public class Product {
     @Column(nullable = false)
     private int stockQuantity; // Number of items in stock
 
-    // ─── Constructors ────────────────────────────────────────────────────────────
+    //  Constructors 
     public Product() {}
 
     public Product(String name, String brand, double price, int stockQuantity) {
@@ -35,7 +31,7 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    // ─── Getters & Setters ───────────────────────────────────────────────────────
+    //  Getters & Setters 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
