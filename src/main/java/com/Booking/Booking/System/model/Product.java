@@ -2,6 +2,10 @@ package com.Booking.Booking.System.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Product class representing a physical item sold by the salon (e.g., Shampoo, Conditioner).
+ * OOP Concept: Encapsulation.
+ */
 @Entity
 @Table(name = "products")
 public class Product {
@@ -21,7 +25,12 @@ public class Product {
     @Column(nullable = false)
     private int stockQuantity; // Number of items in stock
 
-    //  Constructors 
+    // Image path stored after upload, e.g. /uploads/products/product-123.jpg
+    // Nullable — products without images show a placeholder on frontend
+    @Column
+    private String imageUrl;
+
+    // ─── Constructors ────────────────────────────────────────────────────────────
     public Product() {}
 
     public Product(String name, String brand, double price, int stockQuantity) {
@@ -31,7 +40,7 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    //  Getters & Setters 
+    // ─── Getters & Setters ───────────────────────────────────────────────────────
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -46,4 +55,7 @@ public class Product {
 
     public int getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }
