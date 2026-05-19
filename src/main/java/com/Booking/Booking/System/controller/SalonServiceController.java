@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * REST Controller for SalonService (Catalog of services) API.
+ * Exposes CRUD endpoints at /api/services
+ */
 @RestController
 @RequestMapping("/api/services")
 public class SalonServiceController {
