@@ -2,6 +2,10 @@ package com.Booking.Booking.System.model;
 
 import jakarta.persistence.*;
 
+/**
+ * SalonService class represents a service offered by the salon (e.g., Haircut, Facial).
+ * OOP Concept: Encapsulation.
+ */
 @Entity
 @Table(name = "services")
 public class SalonService {
@@ -21,7 +25,7 @@ public class SalonService {
     @Column(nullable = false)
     private int durationMinutes; // How long the service takes
 
-    //  Constructors 
+    // ─── Constructors ────────────────────────────────────────────────────────────
     public SalonService() {}
 
     public SalonService(String name, String description, double price, int durationMinutes) {
@@ -31,7 +35,7 @@ public class SalonService {
         this.durationMinutes = durationMinutes;
     }
 
-    //  Getters & Setters 
+    // ─── Getters & Setters ───────────────────────────────────────────────────────
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
