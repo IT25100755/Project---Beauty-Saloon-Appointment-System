@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback | Body Glow</title>
+    <meta name="description" content="Read what our clients say about Body Glow beauty and wellness services. Share your own experience too.">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .glass-header {
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.212);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.432);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px rgba(255, 255, 255, 0.3);
+    }
+    .glass-button {
+        background: rgba(0, 0, 0, 0.041);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 2), inset 0 1px rgba(255, 255, 255, 0.23);
+    }
+    .glass-button:hover {
+        background: rgba(201, 169, 97, 0.14);
+        border-color: rgba(201, 169, 97, 0.6);
+        box-shadow: 0 4px 20px rgba(201, 169, 97, 0.18);
+    }
+    .glass-grid {
+        background: rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(110px);
+        -webkit-backdrop-filter: blur(100px);
+        border: 1px solid rgb(255, 255, 255);
+    }
+    .text-outline { -webkit-text-stroke: 1px rgba(172, 144, 80, 0.5); }
+    .text-luxury-shadow { text-shadow: 0px 0px 25px rgba(0, 0, 0); }
+    .text-shadow-glow   { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); }
+    @keyframes shimmer {
+        0%   { background-position: -1000px 0; }
+        100% { background-position:  1000px 0; }
+    }
+    .gold-shimmer {
+        background: linear-gradient(90deg, #C9A961 0%, #F0DC9A 50%, #C9A961 100%);
+        background-size: 200% 100%;
+        animation: shimmer 3s linear infinite;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.55s ease-out both; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .glass-input {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(201, 169, 97, 0.25);
+        color: white;
+        border-radius: 8px;
+        padding: 12px 16px;
+        width: 100%;
+        transition: all 0.3s ease;
+        outline: none;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+    }
+    .glass-input:focus {
+        border-color: rgba(201, 169, 97, 0.7);
+        background: rgba(255, 255, 255, 0.09);
+        box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+    }
+    .glass-input::placeholder { color: rgba(255, 255, 255, 0.32); }
+    .glass-input option { background: #1e1e1e; color: white; }
+    .toast {
+        position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+        padding: 15px 22px; border-radius: 10px; color: white;
+        font-weight: 600; font-size: 0.9rem;
+        backdrop-filter: blur(14px);
+        background: rgba(20, 20, 20, 0.92);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+        transform: translateX(130%);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-width: 360px; display: flex; align-items: center; gap: 10px;
+    }
+    .toast.show      { transform: translateX(0); }
+    .toast.success   { border-left: 4px solid #4CAF50; }
+    .toast.error     { border-left: 4px solid #EF5350; }
+    .toast.info      { border-left: 4px solid #C9A961; }
+    @keyframes skeletonPulse {
+        0%,100% { opacity: 0.5; }
+        50%      { opacity: 1; }
+    }
+    .skeleton { background: rgba(255,255,255,0.07); border-radius: 8px; animation: skeletonPulse 1.6s ease-in-out infinite; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track  { background: #111; }
+    ::-webkit-scrollbar-thumb  { background: rgba(201,169,97,0.4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #C9A961; }
+    /* Review card hover */
+    .review-card { transition: transform 0.3s ease, border-color 0.3s ease; }
+    .review-card:hover { transform: translateY(-4px); border-color: rgba(201,169,97,0.5) !important; }
+
+            #reviews-carousel {
+    position: relative;
+    height: 360px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+}
+
+/* Base card */
+.review-card {
+    position: absolute;
+    width: 370px;
+    transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transform-style: preserve-3d;
+}
+
+/* LEFT CARD */
+.review-left {
+    transform: translateX(-110%) scale(0.85) ;
+    opacity: 0.45;
+}
+
+/* CENTER CARD (FOCUSED) */
+.review-center {
+    transform: translateX(0px) scale(1.34) ;
+    opacity: 100;
+    z-index: 10;
+}
+
+/* RIGHT CARD */
+.review-right {
+    transform: translateX(110%) scale(0.85) ;
+    opacity: 0.45;
+}
+
+/* EXIT LEFT (smooth slide out) */
+.review-exit-left {
+    transform: translateX(-420px) scale(0.7) rotateY(35deg);
+    opacity: 0;
+}
+
+/* ENTER RIGHT (incoming card) */
+.review-enter-right {
+    transform: translateX(420px) scale(0.7) rotateY(-35deg);
+    opacity: 0;
+}
+
+/* Card inner styling improvement */
+.review-card .glass-grid {
+    backdrop-filter: blur(12px);
+    background: rgba(20, 20, 20, 0.35);
+    border-radius: 16px;
+    border: 1px solid rgba(201, 169, 97, 0.25);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* Smooth text */
+.review-card p {
+    line-height: 1.5;
+}
+
+/* Hover effect (nice touch) */
+.review-center:hover {
+    transform: translateX(0px) scale(1.15) rotateY(0deg);
+}
+
+/* Mobile fix */
+@media (max-width: 768px) {
+
+    #reviews-carousel {
+        position: relative;
+        height: auto;
+        min-height: 420px;
+        display: block;
+        overflow: hidden; /* IMPORTANT: stops page overflow */
+        padding: 20px 0;
+        perspective: none;
+    }
+
+    .review-card {
+        position: absolute;
+        left: 50%;
+        top: 0;
+
+        width: calc(100% - 32px); /* prevents overflow */
+        max-width: 420px;
+
+        transform: translateX(-50%) scale(1);
+        transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+
+        box-sizing: border-box;
+    }
+
+    /* ONLY CENTER VISIBLE */
+    .review-center {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+        z-index: 10;
+    }
+
+    .review-left,
+    .review-right {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-150%) scale(0.9);
+    }
+
+    /* exit */
+    .review-exit-left {
+        transform: translateX(-200%) scale(0.85);
+        opacity: 0;
+    }
+
+    /* enter */
+    .review-enter-right {
+        transform: translateX(200%) scale(0.85);
+        opacity: 0;
+    }
+
+    /* FIX INNER CARD BORDER CLIPPING */
+    .review-card .glass-grid {
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* EXTRA SAFETY: stop page horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+}
+</style>
+</head>
+
+<body class="min-h-screen text-white bg-gradient-to-r from-[#1A1A1A] to-[#2F4F4F]">
+
+    <!-- Global navbar injected here -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ── Hero ─────────────────────────────────────────────── -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
+
+        <div class="absolute inset-0">
+            <img src="images/feedback.jpg" alt="Customer Feedback" class="w-full h-full object-cover object-top">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#1A1A1A]/80 via-[#1A1A1A]/60 to-[#1A1A1A]"></div>
+        </div>
+        <div class="relative z-10 text-center animate-fadeInUp px-4">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C9A961]/40 bg-[#C9A961]/10 mb-4">
+                <i data-lucide="star" class="w-4 h-4 text-[#C9A961]"></i>
+                <span class="text-[#C9A961] text-xs font-bold uppercase tracking-widest">Verified Reviews</span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-serif text-white mb-3">Customer Feedback</h1>
+            <p class="text-[#C9A961] text-lg max-w-xl mx-auto">
+                Real experiences from our valued clients — and your voice matters too.
+            </p>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         LEAVE A REVIEW SECTION — Logged-in users can submit a review
+         ══════════════════════════════════════════════════════════════ -->
+    <section id="leave-review" class="py-16 text-white">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-grid rounded-2xl p-8 border border-[#C9A961]/30 shadow-2xl animate-fadeInUp delay-100">
+                <h2 class="text-3xl font-serif text-[#C9A961] mb-2 text-center">Share Your Experience</h2>
+                <p class="text-gray-400 text-center mb-8">Your feedback helps us grow. Tell us what you think! ✨</p>
+
+                <!-- Shown only when user is NOT logged in -->
+                <div id="review-login-prompt" class="hidden text-center py-6">
+                    <p class="text-gray-400 mb-4">You need to be signed in to leave a review.</p>
+                    <a href="signin.html" class="glass-button border border-[#C9A961] text-[#C9A961] hover:bg-[#C9A961] hover:text-[#1A1A1A] px-6 py-3 rounded-md transition-all font-semibold">
+                        Sign In to Review
+                    </a>
+                </div>
+
+                <!-- Shown only when user IS logged in -->
+                <form id="review-form" class="hidden space-y-5" onsubmit="submitReview(event)">
+
+                    <!-- Star Rating Picker -->
+                    <div>
+                        <label class="block text-sm font-semibold text-[#C9A961] mb-2">Your Rating *</label>
+                        <div id="star-picker" class="flex gap-2 text-4xl cursor-pointer" role="group" aria-label="Rating">
+                            <span data-star="1" class="star-btn text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                            <span data-star="2" class="star-btn text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                            <span data-star="3" class="star-btn text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                            <span data-star="4" class="star-btn text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                            <span data-star="5" class="star-btn text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                        </div>
+                        <input type="hidden" id="review-rating" value="0">
+                    </div>
+
+                    <!-- Comment -->
+                    <div>
+                        <label for="review-comment" class="block text-sm font-semibold text-[#C9A961] mb-2">Your Comment *</label>
+                        <textarea id="review-comment" rows="4" placeholder="Tell us about your experience..."
+                            class="w-full bg-white/5 border border-[#C9A961]/30 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A961] transition-colors resize-none"></textarea>
+                    </div>
+
+                    <!-- Service selector (loads from API) -->
+                    <div>
+                        <label for="review-service" class="block text-sm font-semibold text-[#C9A961] mb-2">Service Reviewed *</label>
+                        <select id="review-service"
+                            class="w-full bg-[#1A1A1A] border border-[#C9A961]/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#C9A961] transition-colors">
+                            <option value="">Loading services...</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="review-submit-btn"
+                        class="w-full glass-button border border-[#C9A961] text-[#C9A961] hover:bg-[#C9A961] hover:text-[#1A1A1A] py-3 rounded-lg font-bold text-lg transition-all">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         TESTIMONIALS — Loads live reviews from /api/reviews
+         ══════════════════════════════════════════════════════════════ -->
+<section id="testimonials" class="py-20 text-white glass-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl md:text-5xl font-serif text-[#C9A961] mb-6">What Our Clients Say</h2>
+            <p class="text-lg text-gray-300 mb-12 max-w-2xl mx-auto">
+                Hear from our satisfied clients who have experienced the transformative power of Body Glow.
+            </p>
+
+            <!-- Loading spinner shown while fetching -->
+            <div id="reviews-loading" class="flex justify-center items-center py-12">
+                <div class="w-8 h-8 border-2 border-[#C9A961] border-t-transparent rounded-full animate-spin"></div>
+                <span class="ml-3 text-gray-400">Loading reviews...</span>
+            </div>
+
+            <!-- Empty state shown when no reviews exist yet -->
+            <div id="reviews-empty" class="hidden py-12">
+                <div class="text-5xl mb-4">💬</div>
+                <p class="text-gray-400 text-lg">No reviews yet. Be the first to share your experience!</p>
+            </div>
+
+            <!-- Live review cards injected here by JavaScript -->
+            <div id="reviews-carousel" class="relative flex items-center justify-center gap-6 py-10 overflow-hidden"></div>
+        </div>
+    </section>
+
+    <!-- ── Contact CTA ───────────────────────────────────────── -->
+    <section class="py-16 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-[#C9A961] text-3xl md:text-4xl font-serif mb-4">Ready to Experience Body Glow?</h2>
+            <p class="text-gray-300 mb-8">Book your appointment and create your own glowing story.</p>
+            <a href="bookingform.html"
+               class="inline-block bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold px-10 py-4 text-lg rounded-md transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#C9A961]/20">
+                Book an Appointment
+            </a>
+        </div>
+    </section>
+
+    <!-- ── Edit Review Modal ─────────────────────────────────────── -->
+    <div id="modal-edit-review" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeEditModal()"></div>
+        <div class="relative glass-grid rounded-2xl p-8 max-w-lg w-full mx-4 border border-[#C9A961]/30 shadow-2xl">
+            <h3 class="text-xl font-serif text-[#C9A961] mb-5">✏ Edit Your Review</h3>
+            <input type="hidden" id="edit-review-id">
+            <!-- Star picker -->
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-[#C9A961] mb-2">Rating *</label>
+                <div id="edit-star-picker" class="flex gap-2 text-4xl cursor-pointer">
+                    <span data-star="1" class="edit-star text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                    <span data-star="2" class="edit-star text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                    <span data-star="3" class="edit-star text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                    <span data-star="4" class="edit-star text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                    <span data-star="5" class="edit-star text-gray-600 hover:text-[#C9A961] transition-colors select-none">★</span>
+                </div>
+                <input type="hidden" id="edit-review-rating" value="0">
+            </div>
+            <!-- Comment -->
+            <div class="mb-5">
+                <label class="block text-sm font-semibold text-[#C9A961] mb-2">Comment *</label>
+                <textarea id="edit-review-comment" rows="4"
+                    class="w-full bg-white/5 border border-[#C9A961]/30 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A961] transition-colors resize-none"
+                    placeholder="Update your comment..."></textarea>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeEditModal()" class="flex-1 glass-button border border-white/20 text-gray-300 py-2.5 rounded-lg font-semibold">Cancel</button>
+                <button onclick="submitEditReview()" id="btn-edit-review"
+                    class="flex-1 bg-[#C9A961] hover:bg-[#B8933F] text-[#1A1A1A] font-bold py-2.5 rounded-lg transition-all">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer class="bg-[#1A1A1A] glass-header text-white py-12 border-t border-[#C9A961]/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <i data-lucide="sparkles" class="w-6 h-6 text-[#C9A961]"></i>
+                <span class="text-2xl font-serif">Body Glow</span>
+            </div>
+            <p class="text-gray-500 mb-8">&copy; 2026 Body Glow. All rights reserved. Designed by Project group 259.</p>
+            <div class="flex justify-center gap-6">
+                <a href="https://facebook.com/" target="_blank" class="glass-button w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com/" target="_blank" class="glass-button w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://linkedin.com/"  target="_blank" class="glass-button w-10 h-10 bg-[#C9A961] rounded-full flex items-center justify-center text-[#1A1A1A] hover:scale-110 transition-transform"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>lucide.createIcons();</script>
+    <!-- navbar.js BEFORE script.js so #auth-section exists when script.js runs -->
+    <script src="script/navbar.js"></script>
+    <script src="script/script.js"></script>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         REVIEW MODULE — load, display, and submit reviews
+         ══════════════════════════════════════════════════════════════ -->
+    <script>
+    /* ── Render star rating HTML ─────────────────────────────────────── */
+    function renderStars(rating) {
+        var html = '';
+        for (var i = 1; i <= 5; i++) {
+            html += '<span style="color:' + (i <= rating ? '#C9A961' : '#4B5563') + '; font-size:1.1rem">★</span>';
+        }
+        return html;
+    }
+
+    /* ── Format ISO date array or string ────────────────────────────── */
+    function formatReviewDate(val) {
+        if (Array.isArray(val)) {
+            var d = new Date(val[0], val[1] - 1, val[2]);
+            return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+        }
+        if (typeof val === 'string') {
+            return new Date(val).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+        }
+        return '';
+    }
+
+    /* ── Load and render reviews from /api/reviews ───────────────────── */
+   async function loadReviews() {
+
+    const loading = document.getElementById('reviews-loading');
+    const empty   = document.getElementById('reviews-empty');
+    const root    = document.getElementById('reviews-carousel');
+
+    if (!loading || !root) return;
+
+    try {
+        const res = await fetch('/api/reviews');
+        const reviews = await res.json();
+
+        loading.classList.add('hidden');
+
+        if (!Array.isArray(reviews) || reviews.length === 0) {
+            empty.classList.remove('hidden');
+            return;
+        }
+
+        let index = 0;
+
+        function createCard(r, className) {
+            const div = document.createElement('div');
+            div.className = `review-card ${className}`;
+
+            // Check if the logged-in user owns this review
+            const loggedIn = getCurrentUser();
+            const isOwner  = loggedIn && loggedIn.id === r.user?.id;
+
+            // Only show Edit/Delete buttons on the CENTER (active) card for the owner
+            const ownerButtons = (isOwner && className === 'review-center') ? `
+                <div class="flex gap-2 mt-3">
+                    <button onclick="openEditReview(${r.id}, ${r.rating}, '${escapeHtml(r.comment).replace(/'/g, "&apos;")}')"
+                        class="text-xs border border-[#C9A961]/50 text-[#C9A961] px-3 py-1 rounded-lg hover:bg-[#C9A961]/10 transition-all">
+                        ✏ Edit
+                    </button>
+                    <button onclick="deleteOwnReview(${r.id})"
+                        class="text-xs border border-red-400/40 text-red-400 px-3 py-1 rounded-lg hover:bg-red-400/10 transition-all">
+                        🗑 Delete
+                    </button>
+                </div>` : '';
+
+            div.innerHTML = `
+                <div class="glass-grid rounded-lg p-6 shadow-md border border-[#ffffff]/30 text-left">
+                    <div class="mb-3">${renderStars(r.rating)}</div>
+                    <p class="mb-5 text-gray-300 italic">"${escapeHtml(r.comment)}"</p>
+                    <div class="flex items-center gap-3 border-t border-white/10 pt-4">
+                        <div class="w-9 h-9 rounded-full bg-[#C9A961]/20 flex items-center justify-center text-[#C9A961] font-bold text-sm">
+                            ${(r.user?.name || 'U').charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-[#C9A961]">
+                                ${escapeHtml(r.user ? r.user.name : 'Anonymous')}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                ${escapeHtml(r.salonService ? r.salonService.name : 'Service')}
+                                &middot;
+                                ${formatReviewDate(r.createdAt)}
+                            </div>
+                        </div>
+                    </div>
+                    ${ownerButtons}
+                </div>
+            `;
+            return div;
+        }
+
+        let leftCard, centerCard, rightCard;
+
+        function render() {
+
+            root.innerHTML = "";
+
+            leftCard   = createCard(reviews[(index - 1 + reviews.length) % reviews.length], "review-left");
+            centerCard = createCard(reviews[index % reviews.length], "review-center");
+            rightCard  = createCard(reviews[(index + 1) % reviews.length], "review-right");
+
+            root.appendChild(leftCard);
+            root.appendChild(centerCard);
+            root.appendChild(rightCard);
+        }
+
+        function animateNext() {
+
+            index = (index + 1) % reviews.length;
+
+            const oldLeft   = leftCard;
+            const oldCenter = centerCard;
+            const oldRight  = rightCard;
+
+            /* exit animation */
+            oldLeft.classList.add("review-exit-left");
+
+            oldCenter.classList.remove("review-center");
+            oldCenter.classList.add("review-left");
+
+            oldRight.classList.remove("review-right");
+            oldRight.classList.add("review-center");
+
+            setTimeout(() => {
+                render();
+            }, 600);
+        }
+
+        render();
+
+        setInterval(animateNext, 3500);
+
+    } catch (err) {
+        if (loading) {
+            loading.innerHTML =
+                '<p class="text-gray-500 py-8">Could not load reviews right now.</p>';
+        }
+        console.error(err);
+    }
+}
+
+    /* ── Populate service dropdown from /api/services ────────────────── */
+    async function loadServicesDropdown() {
+        var sel = document.getElementById('review-service');
+        if (!sel) return;
+        try {
+            var res      = await fetch('/api/services');
+            var services = await res.json();
+            sel.innerHTML = '<option value="">— Select a service —</option>'
+                + services.map(function(s) {
+                    return '<option value="' + s.id + '">' + escapeHtml(s.name) + '</option>';
+                }).join('');
+        } catch (e) {
+            sel.innerHTML = '<option value="">Could not load services</option>';
+        }
+    }
+
+    /* ── Star picker interactivity ────────────────────────────────────── */
+    function initStarPicker() {
+        var stars  = document.querySelectorAll('.star-btn');
+        var hidden = document.getElementById('review-rating');
+        if (!stars.length || !hidden) return;
+
+        stars.forEach(function(star) {
+            star.addEventListener('mouseenter', function() {
+                var val = parseInt(star.dataset.star);
+                stars.forEach(function(s) { s.style.color = parseInt(s.dataset.star) <= val ? '#C9A961' : '#4B5563'; });
+            });
+            star.addEventListener('mouseleave', function() {
+                var val = parseInt(hidden.value) || 0;
+                stars.forEach(function(s) { s.style.color = parseInt(s.dataset.star) <= val ? '#C9A961' : '#4B5563'; });
+            });
+            star.addEventListener('click', function() {
+                hidden.value = star.dataset.star;
+                var val = parseInt(star.dataset.star);
+                stars.forEach(function(s) { s.style.color = parseInt(s.dataset.star) <= val ? '#C9A961' : '#4B5563'; });
+            });
+        });
+    }
+
+    /* ── Submit review form ───────────────────────────────────────────── */
+    async function submitReview(event) {
+        event.preventDefault();
+        var user      = getCurrentUser();
+        var rating    = parseInt(document.getElementById('review-rating').value);
+        var comment   = document.getElementById('review-comment').value.trim();
+        var serviceId = document.getElementById('review-service').value;
+        var btn       = document.getElementById('review-submit-btn');
+
+        if (!user)                      { showToast('Please sign in to submit a review.', 'error'); return; }
+        if (rating < 1 || rating > 5)  { showToast('Please select a star rating (1–5).', 'error'); return; }
+        if (!comment)                   { showToast('Please write a comment before submitting.', 'error'); return; }
+        if (!serviceId)                 { showToast('Please select the service you are reviewing.', 'error'); return; }
+
+        btn.disabled    = true;
+        btn.textContent = 'Submitting...';
+
+        var payload = { rating: rating, comment: comment, user: { id: user.id }, salonService: { id: parseInt(serviceId) } };
+
+        try {
+            var result = await apiPost('/reviews/add', payload);
+            if (result.ok) {
+                showToast('Thank you! Your review has been submitted. ✨', 'success');
+                document.getElementById('review-comment').value = '';
+                document.getElementById('review-rating').value  = '0';
+                document.getElementById('review-service').value = '';
+                document.querySelectorAll('.star-btn').forEach(function(s) { s.style.color = '#4B5563'; });
+                loadReviews();
+            } else {
+                showToast(result.data || 'Could not submit review. Please try again.', 'error');
+            }
+        } catch (err) {
+            showToast('Network error. Please check your connection.', 'error');
+            console.error(err);
+        } finally {
+            btn.disabled    = false;
+            btn.textContent = 'Submit Review';
+        }
+    }
+
+    /* ── Edit Review Functions ────────────────────────────────────── */
+    function openEditReview(id, rating, comment) {
+        document.getElementById('edit-review-id').value      = id;
+        document.getElementById('edit-review-rating').value  = rating;
+        document.getElementById('edit-review-comment').value = comment;
+        // Highlight stars
+        document.querySelectorAll('.edit-star').forEach(function(s) {
+            s.style.color = parseInt(s.dataset.star) <= rating ? '#C9A961' : '#4B5563';
+        });
+        // Star picker events
+        var hidden = document.getElementById('edit-review-rating');
+        document.querySelectorAll('.edit-star').forEach(function(star) {
+            star.onclick = function() {
+                hidden.value = star.dataset.star;
+                document.querySelectorAll('.edit-star').forEach(function(s) {
+                    s.style.color = parseInt(s.dataset.star) <= parseInt(star.dataset.star) ? '#C9A961' : '#4B5563';
+                });
+            };
+        });
+        document.getElementById('modal-edit-review').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        document.getElementById('modal-edit-review').classList.add('hidden');
+    }
+
+    async function submitEditReview() {
+        var id      = document.getElementById('edit-review-id').value;
+        var rating  = parseInt(document.getElementById('edit-review-rating').value);
+        var comment = document.getElementById('edit-review-comment').value.trim();
+        var btn     = document.getElementById('btn-edit-review');
+
+        if (rating < 1 || rating > 5) { showToast('Please select a rating (1–5).', 'error'); return; }
+        if (!comment)                  { showToast('Comment cannot be empty.', 'error'); return; }
+
+        btn.disabled = true; btn.textContent = 'Saving...';
+        try {
+            var result = await apiPut('/reviews/update/' + id, { rating: rating, comment: comment });
+            if (result.ok) {
+                showToast('Review updated! ✨', 'success');
+                closeEditModal();
+                loadReviews();
+            } else {
+                showToast(result.data || 'Update failed. Please try again.', 'error');
+            }
+        } catch(err) {
+            showToast('Network error.', 'error');
+        } finally {
+            btn.disabled = false; btn.textContent = 'Save Changes';
+        }
+    }
+
+    async function deleteOwnReview(id) {
+        if (!confirm('Are you sure you want to delete your review? This cannot be undone.')) return;
+        try {
+            var res = await fetch('/api/reviews/delete/' + id, { method: 'DELETE' });
+            if (res.ok) {
+                showToast('Review deleted.', 'success');
+                loadReviews();
+            } else {
+                showToast('Could not delete review.', 'error');
+            }
+        } catch(err) {
+            showToast('Network error.', 'error');
+        }
+    }
+
+    /* ── Page Init ────────────────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function() {
+        loadReviews();
+        var user = getCurrentUser();
+        if (user) {
+            document.getElementById('review-form').classList.remove('hidden');
+            loadServicesDropdown();
+            initStarPicker();
+        } else {
+            document.getElementById('review-login-prompt').classList.remove('hidden');
+        }
+    });
+    </script>
+</body>
+</html>
