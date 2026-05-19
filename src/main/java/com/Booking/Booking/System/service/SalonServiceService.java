@@ -8,18 +8,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for SalonService (the salon's offered services).
+ * OOP Concept: Encapsulation.
+ */
 @Service
 public class SalonServiceService {
 
     @Autowired
     private SalonServiceRepository salonServiceRepository;
 
-    //  CREATE 
+    // ─── CREATE ──────────────────────────────────────────────────────────────────
     public SalonService saveService(SalonService service) {
         return salonServiceRepository.save(service);
     }
 
-    //  READ 
+    // ─── READ ────────────────────────────────────────────────────────────────────
     public List<SalonService> getAllServices() {
         return salonServiceRepository.findAll();
     }
@@ -28,7 +32,7 @@ public class SalonServiceService {
         return salonServiceRepository.findById(id);
     }
 
-    //  UPDATE 
+    // ─── UPDATE ──────────────────────────────────────────────────────────────────
     public SalonService updateService(Long id, SalonService serviceDetails) {
         Optional<SalonService> optionalService = salonServiceRepository.findById(id);
         if (optionalService.isPresent()) {
@@ -42,7 +46,7 @@ public class SalonServiceService {
         return null;
     }
 
-    //  DELETE 
+    // ─── DELETE ──────────────────────────────────────────────────────────────────
     public void deleteService(Long id) {
         salonServiceRepository.deleteById(id);
     }
