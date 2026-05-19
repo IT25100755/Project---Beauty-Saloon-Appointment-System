@@ -8,10 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-// REST Controller for User API.
-
+/**
+ * REST Controller for User API.
+ * Exposes CRUD endpoints at /api/users
+ * OOP Concept: Abstraction — hides implementation, exposes clean API.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -19,7 +23,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //  CREATE User POST /api/users
+    // ─── CREATE User ─────────────────────────────────────────────────────────────
+    // POST /api/users
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
@@ -30,13 +35,15 @@ public class UserController {
         }
     }
 
-    //  READ All Users GET /api/users
+    // ─── READ All Users ──────────────────────────────────────────────────────────
+    // GET /api/users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers()); // 200 OK
     }
 
-    //  READ User by ID GET /api/users/{id}
+    // ─── READ User by ID ─────────────────────────────────────────────────────────
+    // GET /api/users/{id}
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
@@ -44,7 +51,8 @@ public class UserController {
                    .orElse(ResponseEntity.notFound().build()); // 404 Not Found
     }
 
-    //  READ User by Email GET /api/users/email/{email}
+    // ─── READ User by Email ──────────────────────────────────────────────────────
+    // GET /api/users/email/{email}
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
@@ -52,7 +60,8 @@ public class UserController {
                    .orElse(ResponseEntity.notFound().build());
     }
 
-    //  UPDATE User PUT /api/users/{id}
+    // ─── UPDATE User ─────────────────────────────────────────────────────────────
+    // PUT /api/users/{id}
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         User updatedUser = userService.updateUser(id, userDetails);
@@ -62,10 +71,25 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    //  DELETE User DELETE /api/users/{id}
+    // ─── DELETE User ─────────────────────────────────────────────────────────────
+    // DELETE /api/users/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User with ID " + id + " has been deleted.");
+    }
+
+    // ─── UPDATE User ROLE (Admin action only) ───────────────────────────────────────────
+    // PUT /api/users/{id}/role
+    // Body: { "role": "ADMIN" } or { "role": "MEMBER" }
+    @PutMapping("/{id}/role")
+    public ResponseEntity<?> updateUserRole(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            String newRole = body.get("role");
+            User updated = userService.updateUserRole(id, newRole);
+            return ResponseEntity.ok(updated); // 200 OK with updated user
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage()); // 400 Bad Request
+        }
     }
 }
