@@ -3,38 +3,56 @@ package com.Booking.Booking.System.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Review entity — stores user feedback for a salon service or appointment.
+ *
+ * OOP Concepts Applied:
+ *  - Encapsulation   : All fields are private; accessed via public getters/setters.
+ *  - Inheritance     : Serves as the base class for PublicReview and VerifiedReview
+ *                      (using JPA InheritanceType.JOINED so each subclass gets its own table).
+ *  - Association     : ManyToOne relationships link a Review to a User and a SalonService.
+ */
 @Entity
 @Table(name = "reviews")
-@Inheritance(strategy = InheritanceType.JOINED) 
+@Inheritance(strategy = InheritanceType.JOINED) // Each subclass (PublicReview, VerifiedReview) gets its own joined table
 public class Review {
 
+    // ─── Primary Key ─────────────────────────────────────────────────────────────
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment ID
     private Long id;
 
+    // ─── Rating field (1 to 5 stars) ─────────────────────────────────────────────
     @Column(nullable = false)
-    private int rating; 
+    private int rating; // Must be between 1 and 5 (validated in the service layer)
 
+    // ─── Comment left by the user ─────────────────────────────────────────────────
     @Column(nullable = false, length = 1000)
-    private String comment;
+    private String comment; // Cannot be empty (validated in the service layer)
 
+    // ─── Timestamp: when the review was created ───────────────────────────────────
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // Automatically set when a review is submitted
 
-
+    // ─── Relationship: Many reviews → One User ────────────────────────────────────
+    // A user can leave many reviews, but each review belongs to exactly one user
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false) 
+    @JoinColumn(name = "user_id", nullable = false) // Foreign key column in "reviews" table
     private User user;
 
+    // ─── Relationship: Many reviews → One SalonService ───────────────────────────
+    // A service can receive many reviews, but each review targets one service
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "service_id", nullable = false) 
+    @JoinColumn(name = "service_id", nullable = false) // Foreign key column in "reviews" table
     private SalonService salonService;
 
+    // ─── Optional Relationship: Many reviews → One Appointment ───────────────────
+    // A review may optionally be linked to a specific appointment (can be null)
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "appointment_id", nullable = true) 
+    @JoinColumn(name = "appointment_id", nullable = true) // nullable = true means it is optional
     private Appointment appointment;
 
-    //  Constructors 
+    // ─── Constructors ────────────────────────────────────────────────────────────
     public Review() {}
 
     public Review(int rating, String comment, LocalDateTime createdAt,
@@ -47,7 +65,7 @@ public class Review {
         this.appointment = appointment;
     }
 
-    //  Getters & Setters
+    // ─── Getters & Setters (Encapsulation) ───────────────────────────────────────
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
