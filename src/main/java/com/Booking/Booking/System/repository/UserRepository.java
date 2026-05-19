@@ -6,8 +6,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for User.
+ * Spring Data JPA provides automatic CRUD implementations — no need to write SQL!
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    // Custom query: Find a user by their email address
     Optional<User> findByEmail(String email);
 }
