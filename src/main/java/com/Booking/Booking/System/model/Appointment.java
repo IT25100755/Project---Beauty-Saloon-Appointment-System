@@ -3,6 +3,11 @@ package com.Booking.Booking.System.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Appointment class — maps Users, SalonServices, and Staff together.
+ * OOP Concepts: Association (has-a relationships via @ManyToOne).
+ * Now also stores pricing information including offer discounts.
+ */
 @Entity
 @Table(name = "appointments")
 public class Appointment {
@@ -32,7 +37,28 @@ public class Appointment {
     @Column(nullable = false)
     private String status; // "Booked", "Completed", "Cancelled"
 
-    //  Constructors 
+    // ─── Pricing Fields (Issue Fix #1) ───────────────────────────────────────────
+    // Original price from the service (before any discount)
+    @Column(nullable = false)
+    private double originalPrice;
+
+    // How much was discounted (0 if no offer applied)
+    @Column(nullable = false)
+    private double discountAmount;
+
+    // Final price customer pays = originalPrice - discountAmount
+    @Column(nullable = false)
+    private double finalPrice;
+
+    // ID of the Offer that was applied (null if no offer)
+    @Column
+    private Long appliedOfferId;
+
+    // Name of the applied offer (for display — stored so it survives offer deletion)
+    @Column
+    private String appliedOfferTitle;
+
+    // ─── Constructors ────────────────────────────────────────────────────────────
     public Appointment() {}
 
     public Appointment(User user, SalonService salonService, Staff staff,
@@ -44,7 +70,7 @@ public class Appointment {
         this.status = status;
     }
 
-    //  Getters & Setters 
+    // ─── Getters & Setters ───────────────────────────────────────────────────────
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -62,4 +88,20 @@ public class Appointment {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    // ─── Price Getters & Setters ─────────────────────────────────────────────────
+    public double getOriginalPrice() { return originalPrice; }
+    public void setOriginalPrice(double originalPrice) { this.originalPrice = originalPrice; }
+
+    public double getDiscountAmount() { return discountAmount; }
+    public void setDiscountAmount(double discountAmount) { this.discountAmount = discountAmount; }
+
+    public double getFinalPrice() { return finalPrice; }
+    public void setFinalPrice(double finalPrice) { this.finalPrice = finalPrice; }
+
+    public Long getAppliedOfferId() { return appliedOfferId; }
+    public void setAppliedOfferId(Long appliedOfferId) { this.appliedOfferId = appliedOfferId; }
+
+    public String getAppliedOfferTitle() { return appliedOfferTitle; }
+    public void setAppliedOfferTitle(String appliedOfferTitle) { this.appliedOfferTitle = appliedOfferTitle; }
 }
